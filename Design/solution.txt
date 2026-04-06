@@ -28,3 +28,8 @@ Repo
 save-String
 find-List
 
+
+String results="ID|Amount|Type|Quantity|Description|\n%d|%f|%s|%s|%s|\n",expense.getId(),expense.getAmount(),expense.getCategory().getType(),expense.getCategory().getQuantity(),expense.getCategory().getDescription();
+                //writer.writeLine(expense);//"+expense.getAmount()+""+expense.getCategory().getType()+""+expense.getCategory().getQuantity()+"
+String results="ID|"+expense.getId()+"Amount|"+expense.getAmount()+"Type|"+expense.getCategory().getType()+"Quantity|"+expense.getCategory().getQuantity()+"Description|"+expense.getCategory().getDescription();
+                //writer.writeLine(expense);
