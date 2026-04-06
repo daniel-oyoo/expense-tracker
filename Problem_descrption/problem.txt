@@ -1,0 +1,16 @@
+Why the need for it?
+
+Money just vanishing irregardless of amount
+But having to type all the time would be troublesome--even discoragin such that after three days id forget about it
+Can i budget for my Money
+can i know where my money is going 
+
+
+sms format 
+code  ksh amount sent/received merchant merchant_contact
+day dd/mm/yy time . balance transaction cost
+
+hoow can multiple services share a single endpoint
+--or it calls depending on pararameters
+
+45 mins daily for database

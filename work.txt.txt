@@ -1,0 +1,894 @@
+
+Expense Tracker Code Documentation
+This is decompiled code which is why variable names are var1, var2, etc. Let me document it line by line and fix the issues:
+
+Documented and Fixed Version:
+java
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package com.daniel.expense_tracker.repository.impl;
+
+// Import statements - bringing in required classes from other packages
+import com.daniel.expense_tracker.model.Expense;           // The Expense model class
+import com.daniel.expense_tracker.repository.util.DatabaseConnection; // Our database connection utility
+import java.sql.Connection;      // JDBC interface for database connection
+import java.sql.Date;            // SQL date type (converts to/from Java LocalDate)
+import java.sql.PreparedStatement; // Precompiled SQL statement (prevents SQL injection)
+import java.sql.ResultSet;       // Represents database result set (rows returned from query)
+import java.sql.SQLException;    // Exception class for database errors
+import java.sql.Statement;       // Regular SQL statement
+import java.util.ArrayList;      // Resizable array implementation
+import java.util.List;            // Interface for ordered collections
+
+/**
+ * Repository implementation that uses MySQL database for storage
+ * Handles all CRUD operations for Expense objects
+ */
+public class DatabaseExpenseRepository {
+   
+   /**
+    * Default constructor - no initialization needed
+    * Database connections are obtained when needed from DatabaseConnection class
+    */
+   public DatabaseExpenseRepository() {
+   }
+
+   /**
+    * Saves an expense to the database
+    * @param expense The expense object to save (renamed from var1 for clarity)
+    */
+   public void save(Expense expense) {
+      // SQL INSERT statement with parameter placeholders (?)
+      // This is a prepared statement to prevent SQL injection
+      String sql = "INSERT INTO expenses (amount, category, expense_date, description) VALUES (?, ?, ?, ?)";
+
+      try {
+         // Step 1: Get a database connection from utility class
+         Connection connection = DatabaseConnection.getConnection();
+
+         try {
+            // Step 2: Create prepared statement with the SQL
+            // The second parameter (1) tells JDBC to return generated keys (auto-increment ID)
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            try {
+               // Step 3: Set the parameter values for each ? placeholder
+               // Parameters are 1-indexed (first ? is index 1)
+               preparedStatement.setDouble(1, expense.getAmount());      // Set amount (first ?)
+               preparedStatement.setString(2, expense.getCategory());     // Set category (second ?)
+               // Convert Java LocalDate to SQL Date for database storage
+               preparedStatement.setDate(3, Date.valueOf(expense.getDate())); // Set date (third ?)
+               preparedStatement.setString(4, expense.getDescription());  // Set description (fourth ?)
+               
+               // Step 4: Execute the INSERT statement
+               preparedStatement.executeUpdate();
+               
+               // Step 5: Retrieve the auto-generated ID from database
+               ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+               if (generatedKeys.next()) {  // If there is a generated key
+                  // Set the ID on the expense object (first column of result)
+                  expense.setId(generatedKeys.getInt(1));
+               }
+               
+               // Note: In the decompiled code, there's complex try-catch-finally 
+               // for resource cleanup. Modern Java uses try-with-resources which is cleaner.
+               
+            } catch (Throwable throwable) {
+               // Error handling - if preparedStatement fails, ensure it's closed
+               if (preparedStatement != null) {
+                  try {
+                     preparedStatement.close();  // Close to free database resources
+                  } catch (Throwable suppressed) {
+                     // Add this exception as suppressed to the main exception
+                     throwable.addSuppressed(suppressed);
+                  }
+               }
+               throw throwable;  // Re-throw the original exception
+            }
+
+            // Close prepared statement if successful
+            if (preparedStatement != null) {
+               preparedStatement.close();
+            }
+            
+         } catch (Throwable throwable) {
+            // Error handling - if connection operations fail, ensure connection is closed
+            if (connection != null) {
+               try {
+                  connection.close();  // Close connection
+               } catch (Throwable suppressed) {
+                  throwable.addSuppressed(suppressed);
+               }
+            }
+            throw throwable;  // Re-throw
+         }
+
+         // Close connection if successful
+         if (connection != null) {
+            connection.close();
+         }
+         
+      } catch (SQLException e) {
+         // Catch any SQL errors and print stack trace
+         // FIX: In production, you should log this properly, not just print
+         e.printStackTrace();
+      }
+   }
+
+   /**
+    * Retrieves all expenses from the database
+    * @return List of all Expense objects in the database
+    */
+   public List<Expense> findAll() {
+      // Create empty ArrayList to hold results
+      List<Expense> expenses = new ArrayList<>();
+
+      try {
+         // Step 1: Get database connection
+         Connection connection = DatabaseConnection.getConnection();
+
+         try {
+            // Step 2: Create a statement object to execute SQL
+            Statement statement = connection.createStatement();
+
+            try {
+               // Step 3: Execute the SELECT query and get results
+               // ResultSet contains all rows returned from database
+               ResultSet resultSet = statement.executeQuery("SELECT * FROM expenses");
+
+               try {
+                  // Step 4: Iterate through each row in the result set
+                  // next() returns true if there's another row, false when no more rows
+                  while(resultSet.next()) {
+                     // For each row, create a new Expense object from the column data
+                     // and add it to the list
+                     expenses.add(new Expense(
+                        resultSet.getInt("id"),                 // Get id column as int
+                        resultSet.getDouble("amount"),           // Get amount column as double
+                        resultSet.getString("category"),         // Get category as String
+                        resultSet.getDate("expense_date").toLocalDate(), // Convert SQL Date to LocalDate
+                        resultSet.getString("description")       // Get description as String
+                     ));
+                  }
+               } catch (Throwable throwable) {
+                  // Error handling - close result set if error occurs
+                  if (resultSet != null) {
+                     try {
+                        resultSet.close();
+                     } catch (Throwable suppressed) {
+                        throwable.addSuppressed(suppressed);
+                     }
+                  }
+                  throw throwable;
+               }
+
+               // Close result set if successful
+               if (resultSet != null) {
+                  resultSet.close();
+               }
+               
+            } catch (Throwable throwable) {
+               // Error handling - close statement if error occurs
+               if (statement != null) {
+                  try {
+                     statement.close();
+                  } catch (Throwable suppressed) {
+                     throwable.addSuppressed(suppressed);
+                  }
+               }
+               throw throwable;
+            }
+
+            // Close statement if successful
+            if (statement != null) {
+               statement.close();
+            }
+            
+         } catch (Throwable throwable) {
+            // Error handling - close connection if error occurs
+            if (connection != null) {
+               try {
+                  connection.close();
+               } catch (Throwable suppressed) {
+                  throwable.addSuppressed(suppressed);
+               }
+            }
+            throw throwable;
+         }
+
+         // Close connection if successful
+         if (connection != null) {
+            connection.close();
+         }
+         
+      } catch (SQLException e) {
+         // Catch any SQL errors and print stack trace
+         e.printStackTrace();
+      }
+
+      // Return the list of expenses (may be empty if error occurred or no data)
+      return expenses;
+   }
+}
+Key Issues and Fixes:
+Issue 1: Overcomplicated resource cleanup
+The decompiled code shows manual try-catch-finally blocks which are hard to read.
+
+FIX - Use try-with-resources (Java 7+):
+
+java
+public void save(Expense expense) {
+    String sql = "INSERT INTO expenses (amount, category, expense_date, description) VALUES (?, ?, ?, ?)";
+    
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        
+        pstmt.setDouble(1, expense.getAmount());
+        pstmt.setString(2, expense.getCategory());
+        pstmt.setDate(3, Date.valueOf(expense.getDate()));
+        pstmt.setString(4, expense.getDescription());
+        
+        pstmt.executeUpdate();
+        
+        try (ResultSet rs = pstmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                expense.setId(rs.getInt(1));
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+Issue 2: Silent failures
+The code catches exceptions but doesn't indicate to the caller that something failed.
+
+FIX - Return boolean or throw exception:
+
+java
+public boolean save(Expense expense) throws SQLException {
+    // ... code ...
+    return true; // Return success status
+}
+Issue 3: No logging
+printStackTrace() isn't helpful in production.
+
+FIX - Use proper logging:
+
+java
+catch (SQLException e) {
+    System.err.println("Database error in save(): " + e.getMessage());
+    throw new RuntimeException("Failed to save expense", e);
+}
+Issue 4: Missing null checks
+The code assumes expense object is never null.
+
+FIX - Add validation:
+
+java
+public void save(Expense expense) {
+    if (expense == null) {
+        throw new IllegalArgumentException("Expense cannot be null");
+    }
+    // ... rest of code
+}
+Simplified, Modern Version:
+java
+public class DatabaseExpenseRepository {
+    
+    public void save(Expense expense) {
+        // Validate input
+        if (expense == null) {
+            System.err.println("Cannot save null expense");
+            return;
+        }
+        
+        String sql = "INSERT INTO expenses (amount, category, expense_date, description) VALUES (?, ?, ?, ?)";
+        
+        // Try-with-resources automatically closes all resources
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            System.out.println("Saving expense: " + expense.getAmount() + " - " + expense.getCategory());
+            
+            // Set parameters
+            pstmt.setDouble(1, expense.getAmount());
+            pstmt.setString(2, expense.getCategory());
+            pstmt.setDate(3, Date.valueOf(expense.getDate()));
+            pstmt.setString(4, expense.getDescription());
+            
+            // Execute insert
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println("Rows inserted: " + rowsInserted);
+            
+            // Get generated ID
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    expense.setId(rs.getInt(1));
+                    System.out.println("Expense saved with ID: " + expense.getId());
+                }
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Failed to save expense: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public List<Expense> findAll() {
+        List<Expense> expenses = new ArrayList<>();
+        String sql = "SELECT * FROM expenses ORDER BY id DESC";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            System.out.println("Fetching all expenses...");
+            
+            while (rs.next()) {
+                Expense expense = new Expense(
+                    rs.getInt("id"),
+                    rs.getDouble("amount"),
+                    rs.getString("category"),
+                    rs.getDate("expense_date").toLocalDate(),
+                    rs.getString("description")
+                );
+                expenses.add(expense);
+            }
+            
+            System.out.println("Found " + expenses.size() + " expenses");
+            
+        } catch (SQLException e) {
+            System.err.println("Failed to fetch expenses: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return expenses;
+    }
+}
+This version is cleaner, has better error messages, and uses modern Java features.
+
+instead of this can we use composition import com.daniel.expense_tracker.repository.impl.DatabaseExpenseRepository;
+Yes! Using composition is actually better. Here's how to restructure using composition:
+
+Current Problem:
+You're tightly coupled to DatabaseExpenseRepository directly in Main.java:
+
+java
+import com.daniel.expense_tracker.repository.impl.DatabaseExpenseRepository;
+// ...
+DatabaseExpenseRepository repo = new DatabaseExpenseRepository();
+Better Approach Using Composition:
+1. Create an interface (you already have this):
+java
+package com.daniel.expense_tracker.repository;
+
+import com.daniel.expense_tracker.model.Expense;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+public interface ExpenseRepository {
+    Expense save(Expense expense);
+    Optional<Expense> findById(int id);
+    List<Expense> findAll();
+    void delete(int id);
+    void delete(Expense expense);
+    List<Expense> findByDate(LocalDate date);
+    List<Expense> findByDateRange(LocalDate start, LocalDate end);
+    List<Expense> findByMonth(int year, int month);
+    List<Expense> findByCategory(String category);
+    List<Expense> findByAmountGreaterThan(double amount);
+    double getTotalSpent();
+    double getTotalSpentInMonth(int year, int month);
+    double getTotalSpentByCategory(String category, int year, int month);
+    double getAverageDailySpending(int year, int month);
+    List<String> getAllCategories();
+    long countByCategory(String category);
+    void saveAll(List<Expense> expenses);
+    void deleteAll();
+    long count();
+    void close();
+    boolean isConnected();
+}
+2. Make your repository implement the interface:
+java
+package com.daniel.expense_tracker.repository.impl;
+
+import com.daniel.expense_tracker.model.Expense;
+import com.daniel.expense_tracker.repository.ExpenseRepository;  // IMPORT the interface
+import com.daniel.expense_tracker.repository.util.DatabaseConnection;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class DatabaseExpenseRepository implements ExpenseRepository {  // IMPLEMENT the interface
+    
+    @Override
+    public Expense save(Expense expense) {
+        String sql = "INSERT INTO expenses (amount, category, expense_date, description) VALUES (?, ?, ?, ?)";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            pstmt.setDouble(1, expense.getAmount());
+            pstmt.setString(2, expense.getCategory());
+            pstmt.setDate(3, Date.valueOf(expense.getDate()));
+            pstmt.setString(4, expense.getDescription());
+            
+            pstmt.executeUpdate();
+            
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    expense.setId(rs.getInt(1));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return expense;
+    }
+
+    @Override
+    public Optional<Expense> findById(int id) {
+        String sql = "SELECT * FROM expenses WHERE id = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new Expense(
+                        rs.getInt("id"),
+                        rs.getDouble("amount"),
+                        rs.getString("category"),
+                        rs.getDate("expense_date").toLocalDate(),
+                        rs.getString("description")
+                    ));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Expense> findAll() {
+        List<Expense> list = new ArrayList<>();
+        String sql = "SELECT * FROM expenses";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                list.add(new Expense(
+                    rs.getInt("id"),
+                    rs.getDouble("amount"),
+                    rs.getString("category"),
+                    rs.getDate("expense_date").toLocalDate(),
+                    rs.getString("description")
+                ));
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM expenses WHERE id = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(Expense expense) {
+        if (expense != null && expense.getId() > 0) {
+            delete(expense.getId());
+        }
+    }
+
+    @Override
+    public List<Expense> findByDate(LocalDate date) {
+        List<Expense> list = new ArrayList<>();
+        String sql = "SELECT * FROM expenses WHERE expense_date = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setDate(1, Date.valueOf(date));
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Expense(
+                        rs.getInt("id"),
+                        rs.getDouble("amount"),
+                        rs.getString("category"),
+                        rs.getDate("expense_date").toLocalDate(),
+                        rs.getString("description")
+                    ));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Expense> findByDateRange(LocalDate start, LocalDate end) {
+        List<Expense> list = new ArrayList<>();
+        String sql = "SELECT * FROM expenses WHERE expense_date BETWEEN ? AND ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setDate(1, Date.valueOf(start));
+            pstmt.setDate(2, Date.valueOf(end));
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Expense(
+                        rs.getInt("id"),
+                        rs.getDouble("amount"),
+                        rs.getString("category"),
+                        rs.getDate("expense_date").toLocalDate(),
+                        rs.getString("description")
+                    ));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Expense> findByMonth(int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        return findByDateRange(start, end);
+    }
+
+    @Override
+    public List<Expense> findByCategory(String category) {
+        List<Expense> list = new ArrayList<>();
+        String sql = "SELECT * FROM expenses WHERE category = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, category);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Expense(
+                        rs.getInt("id"),
+                        rs.getDouble("amount"),
+                        rs.getString("category"),
+                        rs.getDate("expense_date").toLocalDate(),
+                        rs.getString("description")
+                    ));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Expense> findByAmountGreaterThan(double amount) {
+        List<Expense> list = new ArrayList<>();
+        String sql = "SELECT * FROM expenses WHERE amount > ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setDouble(1, amount);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Expense(
+                        rs.getInt("id"),
+                        rs.getDouble("amount"),
+                        rs.getString("category"),
+                        rs.getDate("expense_date").toLocalDate(),
+                        rs.getString("description")
+                    ));
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public double getTotalSpent() {
+        String sql = "SELECT SUM(amount) as total FROM expenses";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            if (rs.next()) {
+                return rs.getDouble("total");
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    @Override
+    public double getTotalSpentInMonth(int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        
+        String sql = "SELECT SUM(amount) as total FROM expenses WHERE expense_date BETWEEN ? AND ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setDate(1, Date.valueOf(start));
+            pstmt.setDate(2, Date.valueOf(end));
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("total");
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    @Override
+    public double getTotalSpentByCategory(String category, int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+        
+        String sql = "SELECT SUM(amount) as total FROM expenses WHERE category = ? AND expense_date BETWEEN ? AND ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, category);
+            pstmt.setDate(2, Date.valueOf(start));
+            pstmt.setDate(3, Date.valueOf(end));
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("total");
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    @Override
+    public double getAverageDailySpending(int year, int month) {
+        double total = getTotalSpentInMonth(year, month);
+        LocalDate start = LocalDate.of(year, month, 1);
+        int daysInMonth = start.lengthOfMonth();
+        return daysInMonth > 0 ? total / daysInMonth : 0.0;
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        String sql = "SELECT DISTINCT category FROM expenses ORDER BY category";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                categories.add(rs.getString("category"));
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
+    }
+
+    @Override
+    public long countByCategory(String category) {
+        String sql = "SELECT COUNT(*) as count FROM expenses WHERE category = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, category);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("count");
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public void saveAll(List<Expense> expenses) {
+        String sql = "INSERT INTO expenses (amount, category, expense_date, description) VALUES (?, ?, ?, ?)";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            conn.setAutoCommit(false);  // Start transaction
+            
+            for (Expense expense : expenses) {
+                pstmt.setDouble(1, expense.getAmount());
+                pstmt.setString(2, expense.getCategory());
+                pstmt.setDate(3, Date.valueOf(expense.getDate()));
+                pstmt.setString(4, expense.getDescription());
+                pstmt.addBatch();
+            }
+            
+            pstmt.executeBatch();
+            conn.commit();  // Commit transaction
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        String sql = "DELETE FROM expenses";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement()) {
+            
+            stmt.executeUpdate(sql);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public long count() {
+        String sql = "SELECT COUNT(*) as count FROM expenses";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            if (rs.next()) {
+                return rs.getLong("count");
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public void close() {
+        // Nothing to close as connections are managed per operation
+        System.out.println("Repository closed");
+    }
+
+    @Override
+    public boolean isConnected() {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            return conn != null && !conn.isClosed();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+}
+3. Now use composition in Main.java:
+java
+package com.daniel;
+
+import com.daniel.expense_tracker.repository.ExpenseRepository;  // Import the INTERFACE
+import com.daniel.expense_tracker.repository.impl.DatabaseExpenseRepository;  // Import implementation
+import com.daniel.expense_tracker.model.Expense;
+import java.time.LocalDate;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        // COMPOSITION: Program to interface, not implementation
+        ExpenseRepository repo = new DatabaseExpenseRepository();  // Using interface type
+        
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("--- Daniel's Expense Tracker ---");
+        System.out.print("Amount: ");
+        double amt = Double.parseDouble(sc.nextLine());
+        System.out.print("Category: ");
+        String cat = sc.nextLine();
+        System.out.print("Desc: ");
+        String desc = sc.nextLine();
+
+        // Create and save expense
+        Expense expense = new Expense(amt, cat, LocalDate.now(), desc);
+        repo.save(expense);  // Using interface method
+
+        System.out.println("\nDATABASE ENTRIES:");
+        // Using interface method
+        repo.findAll().forEach(e -> System.out.println(e.toTableRow()));
+        
+        // Show total spent
+        System.out.println("\nTotal spent: $" + repo.getTotalSpent());
+        
+        sc.close();
+        repo.close();  // Clean up
+    }
+}
+Benefits of This Approach:
+Loose Coupling: Main depends on ExpenseRepository interface, not concrete class
+
+Flexibility: Can easily switch implementations:
+
+java
+// Switch to file storage without changing Main.java
+ExpenseRepository repo = new FileExpenseRepository();
+
+// Or in-memory for testing
+ExpenseRepository repo = new InMemoryExpenseRepository();
+Testability: Easy to mock for unit tests
+
+Polymorphism: All repository implementations share same behavior
+
+Even Better - Use Factory Pattern:
+java
+package com.daniel.expense_tracker.repository;
+
+public class RepositoryFactory {
+    public static ExpenseRepository createRepository(String type) {
+        switch(type.toLowerCase()) {
+            case "database":
+                return new com.daniel.expense_tracker.repository.impl.DatabaseExpenseRepository();
+            case "file":
+                return new com.daniel.expense_tracker.repository.impl.FileExpenseRepository();
+            case "memory":
+                return new com.daniel.expense_tracker.repository.impl.InMemoryExpenseRepository();
+            default:
+                return new com.daniel.expense_tracker.repository.impl.DatabaseExpenseRepository();
+        }
+    }
+}
+Then in Main:
+
+java
+ExpenseRepository repo = RepositoryFactory.createRepository("database");
+This is true composition - programming to interfaces rather than concrete implementations!
+
