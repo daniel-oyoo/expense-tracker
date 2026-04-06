@@ -280,7 +280,7 @@ interface Repository{
     public List<Expense>findAll();
 }
 
-class ExpenseRepository{
+class ExpenseRepository implements Repository{
     //store and retrieve here data 
     //id here
 
@@ -337,16 +337,82 @@ class ExpenseRepository{
         return "Expense with id " + id + " deleted successfully";
     }
 
+}
+
+class FileRepository implements Repository{
+    static ExpenseRepository expeRepo =new ExpenseRepository();
+    //static List<Expense>fileExpeList=new ArrayList<>();
+    static List<Expense>fileExpeList=expeRepo.findAll();
+    private static final String fileName="C:\\Users\\markd\\Desktop\\Budget_Tracker\\Data\\expense.txt";
+
+
     //now these do it usinf files--writing
-    public String saveToFile(String fileName){
-        return "";
+    //create file return file reader object for buffered reader
+    public File createFile(){
+        File file=new File(fileName);
+        return file;
     }
 
     //find all
     //public List<Expense>findAllFromFile(){}
 
+   @Override
+   public String save(Expense expense) {
+    // TODO Auto-generated method stub
+   // throw new UnsupportedOperationException("Unimplemented method 'save'");
+   //try with resources
+      try(BufferedWriter writer = new BufferedWriter
+            (new FileWriter(createFile(),true)))
+            {
+                String results="ID|"+expense.getId()+"Amount|"+expense.getAmount()+"Type|"+expense.getCategory().getType()+"Quantity|"+expense.getCategory().getQuantity()+"Description|"+expense.getCategory().getDescription();
+                //writer.writeLine(expense);
+                writer.newLine();
+                writer.write(results);
+            }catch(IOException e){
+                System.out.println("Error : " + e.getMessage());
+            }
+            //finally{
+               // return "Expense with id " + expense.getId() + " saved to file";
+            //}
 
+         return "Expense with id " + expense.getId() + " saved to file";
+      }
+
+   @Override
+   public List<Expense> findAll() {
+    // TODO Auto-generated method stub
+    //throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    //open file and return everything as a list
+    try(BufferedReader reader = new BufferedReader
+        (new FileReader(createFile())))
+        {
+            //read
+            String lines=reader.readLine();
+            String [] parts=lines.split("\\|");
+            while(lines!=null){
+                int id=Integer.parseInt(parts[0]);
+                double amount=Double.parseDouble(parts[1]);
+                String type=parts[2];
+                String quantity=parts[3];
+                String descrption=parts[4];
+                
+                Category category=new Category(type,quantity,descrption);
+                Expense expense = new Expense(id,amount,category);
+
+                fileExpeList.add(expense);
+                lines=reader.readLine();
+ 
+            }
+        }catch(IOException e){
+        System.out.println("Error :" + e.getMessage());
+    }
+       return fileExpeList;
+   }
+
+   
 }
+
+
 
 class Main{
     public static void main(String [] args){
