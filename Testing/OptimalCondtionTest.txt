@@ -1,3 +1,57 @@
+how to delete update and format file properly
+add totals calcuoaltor ,yearly weekly ,monthly
+
+validation ,error checks,
+//upfate and deletes
+
+PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
+_ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;3f835eb5-50e7-4948-8d25-c5af11579ac9
+Welcome to our savings and expense tracker
+
+
+1. ADD EXPENSE     
+2. VIEW EXPENSE    
+3. UPDATE EXPENSE  
+4. DELETE EXPENSE  
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 1
+
+Enter amount :20
+Enter type :food
+Enter quantity :2
+Enter description below 
+1 ngumu and 1 cake
+Expense with id 1 saved 
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 2
+
+[{
+ id : 1
+ amount : 20.0
+ Date : 2026-04-06
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}]
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 5
+Goodbye.....
+PS C:\Users\markd\Desktop\Budget_Tracker> 
 PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
 _ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;17816c83-c588-4fc3-8bcf-a8e557ed9f17
 Welcome to our savings and expense tracker
@@ -63,6 +117,134 @@ What would you Like to do(1-5) : 4
 
 Enter id :1
 Expense with id 1deleted successfully
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 5
+Goodbye.....
+PS C:\Users\markd\Desktop\Budget_Tracker> 
+
+PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
+_ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;c591b6c4-7066-4587-85d7-6cc0abc398d5
+Welcome to our savings and expense tracker
+
+
+1. ADD EXPENSE     
+2. VIEW EXPENSE    
+3. UPDATE EXPENSE  
+4. DELETE EXPENSE  
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 2
+
+[{
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}, {
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}]
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 4
+
+Enter id :1
+Expense with id 1 deleted successfully
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 2
+
+[{
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}, {
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}, {
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}]
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) :
+
+PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
+_ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;946bd538-ed01-4b75-9934-02f3b4bc923c
+Welcome to our savings and expense tracker
+
+
+1. ADD EXPENSE     
+2. VIEW EXPENSE    
+3. UPDATE EXPENSE  
+4. DELETE EXPENSE  
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 2
+
+[{
+ id : 1
+ amount : 20.0
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}]
+
+1. ADD EXPENSE   
+2. VIEW EXPENSE  
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 4
+
+Enter id :1
+Expense with id 1 deleted successfully
 
 1. ADD EXPENSE
 2. VIEW EXPENSE

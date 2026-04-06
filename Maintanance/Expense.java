@@ -70,7 +70,7 @@ public class Expense{
 
   //debugging and printing
   public String toString(){
-    return "{\n id : " + id + "\n amount : " + amount +"\n category : " + category.toString() + "\n}";
+    return "{\n id : " + id + "\n amount : " + amount +"\n Date : " + LocalDate.now() +"\n category : " + category.toString() + "\n}";
   }
 
 
@@ -246,6 +246,7 @@ class ExpenseService{
         Expense expense=new Expense(amount,new Category(type,quantity,descrption));
         //save to file
         repo.save(expense);
+        repo.writeToHumanReadbale(expense);
         //save to storage
         return repository.save(expense);
 
@@ -256,9 +257,11 @@ class ExpenseService{
         //repo.findAll();
         //return repository.findAll().isEmpty()?repo.findAll():repository.findAll();
         //return repo.findAll().isEmpty()?repository.findAll():repo.findAll();
-       // return repository.findAll();
-       if(repo.findAll()==null&&repository.findAll().isEmpty())return repository.findAll();
-       else return repo.findAll();
+       return repository.findAll();
+       //if(repo.findAll()==null&&repository.findAll().isEmpty())return repository.findAll();
+       //else return repo.findAll();
+       //doesnt work on empty text fikes
+        //return repo.findAll();
     }
 
     //update expense
@@ -310,8 +313,8 @@ class ExpenseRepository implements Repository{
     //our intial id
     int code=1;
 
-    static List<Expense>expenseList=new ArrayList<>();
-    //static List<Expense>expenseList=repo.findAll();//how to integrate files with this
+    //static List<Expense>expenseList=new ArrayList<>();
+    static List<Expense>expenseList=repo.findAll();//how to integrate files with this
 
     public String save(Expense expense){
         //set id
@@ -324,13 +327,15 @@ class ExpenseRepository implements Repository{
     //find all/view
     public List<Expense>findAll(){
         //ret copy to avoid direct modifcation
-        return new ArrayList<>(expenseList);
+         return new ArrayList<>(expenseList);
+        //return repo.findAll();
     }
 
     //helper method find by id take id return expense
     public Expense findById(int id){
         //we can even chunk this
-        List<Expense>searchList=findAll();
+        //List<Expense>searchList=findAll();
+        List<Expense>searchList=repo.findAll();
         //to hold our data
         Expense expense=null;
         for(int i = 0 ;i<searchList.size();i++){
@@ -364,6 +369,7 @@ class FileRepository implements Repository{
     //static List<Expense>fileExpeList=expeRepo.findAll();
    static List<Expense>fileExpeList=new ArrayList<>();
     private static final String fileName="C:\\Users\\markd\\Desktop\\Budget_Tracker\\Data\\expense.txt";
+    private static final String humanReadable="C:\\Users\\markd\\Desktop\\Budget_Tracker\\Data\\expenseForHumans.txt";
 
     //set and create id
     int code=1;
@@ -390,10 +396,16 @@ class FileRepository implements Repository{
                 ,true)))
             {
                 //String results="ID|"+expense.getId()+"Amount|"+expense.getAmount()+"Type|"+expense.getCategory().getType()+"Quantity|"+expense.getCategory().getQuantity()+"Description|"+expense.getCategory().getDescription();
-                String results=String.format("ID|Amount|Type|Quantity|Description|Date|\n%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),expense.getCategory().getType(),expense.getCategory().getQuantity(),expense.getCategory().getDescription(),LocalDate.now());
+                ///String results=String.format("ID|Amount|Type|Quantity|Description|Date|\n%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),expense.getCategory().getType(),expense.getCategory().getQuantity(),expense.getCategory().getDescription(),LocalDate.now());
+                String results=String.format("%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),
+                                                             expense.getCategory().getType(),expense.getCategory().getQuantity(),
+                                                             expense.getCategory().getDescription(),LocalDate.now());
                 //writer.writeLine(expense);
-               // writer.newLine();//platform indpendednt newline
+                //writer.newLine();//platform indpendednt newline
+                //writer.writeLine(expense);
+                //writer.newLine();//platform indpendednt newline
                 writer.write(results);
+                //writer.write(expense.toString());
             }catch(IOException e){
                 System.out.println("Error : " + e.getMessage());
             }
@@ -415,12 +427,12 @@ class FileRepository implements Repository{
         {
             //read
             String lines=reader.readLine();
-            String [] parts=lines.split("\\|");
             //reader.skip(0);
             //reader.readLine().
             while(lines!=null){
-                if(lines.charAt(0)=='I')//String discard=lines;//
-                continue;//{}
+                String [] parts=lines.split("\\|");
+                //if(lines.equalsIgnoreCase("ID|Amount|Type|Quantity|Description|Date|"))//String discard=lines;//
+                //lines=reader.readLine();//continue;//{}
                 //if(lines==""||lines.charAt(0)=='I')continue;
                 //if(parts[0].equalsIgnoreCase("id")||parts[0].equals(""))continue;
                 //if(parts[0].equalsIgnoreCase("id"))reader.skip(42);//continue;
@@ -434,6 +446,7 @@ class FileRepository implements Repository{
                 Expense expense = new Expense(id,amount,category);
 
                 fileExpeList.add(expense);
+                //read nxt line
                 lines=reader.readLine();
  
             }
@@ -442,6 +455,39 @@ class FileRepository implements Repository{
     }
  // }//end if
        return fileExpeList;
+   }
+
+   //write to humanreadable
+   public void writeToHumanReadbale(Expense expense){
+    //expense.setId(code++);
+    // TODO Auto-generated method stub
+   // throw new UnsupportedOperationException("Unimplemented method 'save'");
+   //try with resources
+      try(BufferedWriter writer = new BufferedWriter
+            (new FileWriter(humanReadable
+                //createFile()
+                ,true)))
+            {
+                //String results="ID|"+expense.getId()+"Amount|"+expense.getAmount()+"Type|"+expense.getCategory().getType()+"Quantity|"+expense.getCategory().getQuantity()+"Description|"+expense.getCategory().getDescription();
+                ///String results=String.format("ID|Amount|Type|Quantity|Description|Date|\n%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),expense.getCategory().getType(),expense.getCategory().getQuantity(),expense.getCategory().getDescription(),LocalDate.now());
+                //String results=String.format("%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),
+                //                                             expense.getCategory().getType(),expense.getCategory().getQuantity(),
+                //                                             expense.getCategory().getDescription(),LocalDate.now());
+                //writer.writeLine(expense);
+                //writer.newLine();//platform indpendednt newline
+                //writer.writeLine(expense);
+                //writer.newLine();//platform indpendednt newline
+                //writer.write(results);
+                writer.write(expense.toString());
+            }catch(IOException e){
+                System.out.println("Error : " + e.getMessage());
+            }
+            //finally{
+               // return "Expense with id " + expense.getId() + " saved to file";
+            //}
+
+         //return "Expense with id " + expense.getId() + " saved to file";
+
    }
 
    
