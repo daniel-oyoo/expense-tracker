@@ -1,8 +1,10 @@
+Services offered--track expenses
 class diragram
 Budget
 
 amount 
 time/days
+
 
 
 
@@ -13,11 +15,13 @@ amount
 date 
 category
 
-save
-view 
-update 
-delete
+save//post---expense-201 created body/message
+view ---get/id/200 ok/204 notfound
+update --put/id body
+delete--/delete/id;
 findById
+
+getTotalExpense----get/total
 
 Category
 type,quantity,description 

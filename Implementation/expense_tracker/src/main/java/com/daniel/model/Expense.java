@@ -71,7 +71,7 @@ public class Expense{
 
   //debugging and printing
   public String toString(){
-    return "{\n id : " + id + "\n amount : " + amount +"\n Date : " + LocalDate.now() +"\n category : " + category.toString() + "\n}";
+    return "\n{\n id : " + id + "\n amount : " + amount +"\n Date : " + LocalDate.now() +"\n category : " + category.toString() + "\n}\n";
   }
 
 

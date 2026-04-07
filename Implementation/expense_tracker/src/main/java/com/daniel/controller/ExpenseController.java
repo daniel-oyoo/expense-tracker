@@ -12,7 +12,11 @@ public class ExpenseController{
         this.service=service;
     }
 
-    //display welcome message
+    public ExpenseController() {
+        //TODO Auto-generated constructor stub
+    }
+
+//display welcome message
 public void run(){
         //displayWelcomeMessage
         System.out.println("\nWelcome to our savings and expense tracker\n");
@@ -106,6 +110,7 @@ while(true){
         
 
     }
+     
     //try and distribute risk;
     public static ExpenseController createExpenseController(){
         return new ExpenseController(createService());
@@ -118,4 +123,20 @@ while(true){
     public static ExpenseRepository createRepository(){
         return new ExpenseRepository();
     }
+    
+/*
+        //try and distribute risk;
+    public static ExpenseController createExpenseController(ExpenseService service){
+        return new ExpenseController();
+    }
+    //methods to set up objects
+    public static ExpenseService createService(ExpenseRepository repsoitory){
+        return new ExpenseService();
+    }
+
+    public static ExpenseRepository createRepository(){
+        return new ExpenseRepository();
+    }
+
+ */
 }

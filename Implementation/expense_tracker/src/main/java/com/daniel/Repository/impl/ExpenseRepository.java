@@ -7,7 +7,7 @@ import com.daniel.model.Expense;
 
 public class ExpenseRepository implements Repository{
 
-    static FileRepository  repo = new FileRepository();
+   // static FileRepository  repo = new FileRepository();
     //FileRepository  repo = new FileRepository();
     //store and retrieve here data 
     //id here
@@ -20,7 +20,8 @@ public class ExpenseRepository implements Repository{
     int code=1;
 
     //static List<Expense>expenseList=new ArrayList<>();
-    static List<Expense>expenseList=repo.findAll();//how to integrate files with this
+    //static List<Expense>expenseList=repo.findAll();//how to integrate files with this
+    static List<Expense>expenseList=new FileRepository().findAll();
 
     public String save(Expense expense){
         //set id
@@ -40,8 +41,8 @@ public class ExpenseRepository implements Repository{
     //helper method find by id take id return expense
     public Expense findById(int id){
         //we can even chunk this
-        //List<Expense>searchList=findAll();
-        List<Expense>searchList=repo.findAll();
+        List<Expense>searchList=findAll();
+       //List<Expense>searchList=repo.findAll();
         //to hold our data
         Expense expense=null;
         for(int i = 0 ;i<searchList.size();i++){
@@ -54,6 +55,7 @@ public class ExpenseRepository implements Repository{
     //update
     public String update(Expense expense){
         //save to repo
+        //repo.writeToHumanReadbale(expense);
         expenseList.add(expense);
         return "Expense with id " + expense.getId() + " updated ";
     } 

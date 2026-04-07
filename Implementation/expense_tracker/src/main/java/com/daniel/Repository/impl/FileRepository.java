@@ -8,7 +8,7 @@ import com.daniel.model.Category;
 import com.daniel.model.Expense;
 
 public class FileRepository implements Repository{
-    static ExpenseRepository expeRepo =new ExpenseRepository();
+    //static ExpenseRepository expeRepo =new ExpenseRepository();
     //static List<Expense>fileExpeList=expeRepo.findAll();
    static List<Expense>fileExpeList=new ArrayList<>();
     private static final String fileName="C:\\Users\\markd\\Desktop\\Budget_Tracker\\Data\\expense.txt";
@@ -40,7 +40,7 @@ public class FileRepository implements Repository{
             {
                 //String results="ID|"+expense.getId()+"Amount|"+expense.getAmount()+"Type|"+expense.getCategory().getType()+"Quantity|"+expense.getCategory().getQuantity()+"Description|"+expense.getCategory().getDescription();
                 ///String results=String.format("ID|Amount|Type|Quantity|Description|Date|\n%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),expense.getCategory().getType(),expense.getCategory().getQuantity(),expense.getCategory().getDescription(),LocalDate.now());
-                String results=String.format("%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),
+                String results=String.format("\n%d|%.2f|%s|%s|%s|%s",expense.getId(),expense.getAmount(),
                                                              expense.getCategory().getType(),expense.getCategory().getQuantity(),
                                                              expense.getCategory().getDescription(),LocalDate.now());
                 //writer.writeLine(expense);
@@ -48,6 +48,7 @@ public class FileRepository implements Repository{
                 //writer.writeLine(expense);
                 //writer.newLine();//platform indpendednt newline
                 writer.write(results);
+                //writer.newLine();
                 //writer.write(expense.toString());
             }catch(IOException e){
                 System.out.println("Error : " + e.getMessage());
@@ -85,8 +86,10 @@ public class FileRepository implements Repository{
                 String quantity=parts[3];
                 String descrption=parts[4];
                 
-                Category category=new Category(type,quantity,descrption);
-                Expense expense = new Expense(id,amount,category);
+                //Category category=new Category(type,quantity,descrption);
+                //Category category = new Category(type,quantity,descrption);
+                //Expense expense = new Expense(id,amount,category);
+                Expense expense = new Expense(id,amount,new Category(type,quantity,descrption));
 
                 fileExpeList.add(expense);
                 //read nxt line
@@ -122,6 +125,7 @@ public class FileRepository implements Repository{
                 //writer.newLine();//platform indpendednt newline
                 //writer.write(results);
                 writer.write(expense.toString());
+                writer.newLine();
             }catch(IOException e){
                 System.out.println("Error : " + e.getMessage());
             }
