@@ -1,18 +1,31 @@
-//act as a buffer between service an repo --manages i generation
 package com.daniel.Repository;
+
+import java.util.*;
 
 import com.daniel.Repository.impl.FileRepository;
 import com.daniel.model.Expense;
 
+// acts as a buffer between service and repo
+// manages ID generation to ensure no conflicts
 public class RepositoryManager{
-    //int id=(new FileRepository().findAll().size())+1;
-    //int id=(new FileRepository().findAll().size());
-    //get id of last object
-    int id=new FileRepository().findAll().getLast().getId();
-    //before asigning id,load list and see how long it is
+    // get the last ID from file to continue sequence
+    // handle case when file is empty
+    private int getIdFromFile(){
+        try{
+            List<Expense> existing = new FileRepository().findAll();
+            if(existing.isEmpty()){
+                return 0;
+            }
+            return existing.get(existing.size() - 1).getId();
+        } catch(Exception e){
+            return 0;
+        }
+    }
+    
+    // assign new ID before saving
     public String asignId(Expense expense){
-      //int id=(new FileRepository().findAll().size())+1;
-      expense.setId(++id);
-     return new FileRepository().save(expense);
+        int currentMax = getIdFromFile();
+        expense.setId(currentMax + 1);
+        return new FileRepository().save(expense);
     }
 }

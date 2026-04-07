@@ -1,28 +1,35 @@
 package com.daniel;
 
 import javax.swing.SwingUtilities;
-
 import com.daniel.controller.ExpenseController;
 import com.daniel.controller.GuiController;
-import com.daniel.service.ExpenseService;
 import com.daniel.view.GuiView;
 
 public class Main {
     public static void main(String[] args) {
-    //distribute object creation to minimize risk
-   //ExpenseController controller = new ExpenseController(new ExpenseService(new ExpenseRepository()));
-    ExpenseController controller=ExpenseController.createExpenseController();
-    controller.run();
-   //controller.run();
-
-   //ExpenseController controller=ExpenseController.createExpenseController
-    //                                              (ExpenseController.
-   //                                                  createService(ExpenseController.createRepository()));
-   //controller.run();
-   //SwingUtilities.invokeLater(()->{
-        // new GuiView(new GuiController(new ExpenseService()));
-        GuiController.createController();
         
-   //});
-   }
+        // ask user which version to run
+        System.out.println("Select mode:");
+        System.out.println("1. Console Application");
+        System.out.println("2. GUI Application");
+        System.out.print("Enter choice (1 or 2): ");
+        
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        int choice = scanner.nextInt();
+        //scanner.close();
+        
+        if(choice == 1) {
+            // run console version
+            ExpenseController controller = ExpenseController.createExpenseController();
+            controller.run();
+        } else {
+            // run GUI version
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    GuiController guiController = GuiController.createController();
+                    new GuiView(guiController);
+                }
+            });
+        }
+    }
 }
