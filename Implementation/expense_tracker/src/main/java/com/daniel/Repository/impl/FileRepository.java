@@ -7,6 +7,7 @@ import com.daniel.Repository.Repository;
 import com.daniel.model.Category;
 import com.daniel.model.Expense;
 
+//save expesne retturn list to expense repository
 public class FileRepository implements Repository{
     //static ExpenseRepository expeRepo =new ExpenseRepository();
     //static List<Expense>fileExpeList=expeRepo.findAll();
@@ -15,7 +16,7 @@ public class FileRepository implements Repository{
     private static final String humanReadable="C:\\Users\\markd\\Desktop\\Budget_Tracker\\Data\\expenseForHumans.txt";
 
     //set and create id
-    int code=1;
+   // int code=1;
 
     //now these do it usinf files--writing
     //create file return file reader object for buffered reader
@@ -29,7 +30,7 @@ public class FileRepository implements Repository{
 
    @Override
    public String save(Expense expense) {
-    expense.setId(code++);
+    //expense.setId(code++);
     // TODO Auto-generated method stub
    // throw new UnsupportedOperationException("Unimplemented method 'save'");
    //try with resources
@@ -56,6 +57,8 @@ public class FileRepository implements Repository{
             //finally{
                // return "Expense with id " + expense.getId() + " saved to file";
             //}
+            //write to human readble list
+            writeToHumanReadbale(expense);
 
          return "Expense with id " + expense.getId() + " saved to file";
       }

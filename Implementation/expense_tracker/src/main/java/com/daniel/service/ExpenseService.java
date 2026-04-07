@@ -3,6 +3,7 @@ import java.util.*;
 
 import com.daniel.model.Category;
 import com.daniel.model.Expense;
+import com.daniel.Repository.RepositoryManager;
 import com.daniel.Repository.impl.*;
 
 //tf is this so called type parameter
@@ -30,11 +31,12 @@ public class ExpenseService{
         //create expense
         Expense expense=new Expense(amount,new Category(type,quantity,descrption));
         //save to file
-        repo.save(expense);
-        repo.writeToHumanReadbale(expense);
+        //repo.save(expense);
+        //repo.writeToHumanReadbale(expense);
         //save to storage
        // return repository.save(expense);
-       return repo.save(expense);
+       //return repo.save(expense);
+       return new RepositoryManager().asignId(expense);
 
     }
 
@@ -64,8 +66,8 @@ public class ExpenseService{
         expense.setCategory(category);
 
         //save to file
-        repo.save(expense);
-        repo.writeToHumanReadbale(expense);
+        //repo.save(expense);
+        //repo.writeToHumanReadbale(expense);
 
         //save to db
        return  repository.update(expense);

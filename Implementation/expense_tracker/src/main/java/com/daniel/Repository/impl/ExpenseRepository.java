@@ -17,19 +17,20 @@ public class ExpenseRepository implements Repository{
     //2. a file storage system
 
     //our intial id
-    int code=1;
+    //int code=1;
 
     //static List<Expense>expenseList=new ArrayList<>();
     //static List<Expense>expenseList=repo.findAll();//how to integrate files with this
     static List<Expense>expenseList=new FileRepository().findAll();
-
+ 
     public String save(Expense expense){
         //set id
-        expense.setId(code++);
+        //expense.setId(code++);
         //save to repo
-        expenseList.add(expense);
+        //expenseList.add(expense);
         return "Expense with id " + expense.getId() + " saved ";
     }
+
 
     //find all/view
     public List<Expense>findAll(){
@@ -55,7 +56,9 @@ public class ExpenseRepository implements Repository{
     //update
     public String update(Expense expense){
         //save to repo
-        //repo.writeToHumanReadbale(expense);
+         new FileRepository().writeToHumanReadbale(expense);
+         new FileRepository().save(expense);
+         
         expenseList.add(expense);
         return "Expense with id " + expense.getId() + " updated ";
     } 
