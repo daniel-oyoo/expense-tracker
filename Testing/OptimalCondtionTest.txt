@@ -3,6 +3,39 @@ add totals calcuoaltor ,yearly weekly ,monthly
 
 validation ,error checks,
 //upfate and deletes
+//shows current date irregardless
+PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
+_ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;d4464871-3649-4b40-9a59-cc7c85174359
+Welcome to our savings and expense tracker
+
+
+1. ADD EXPENSE     
+2. VIEW EXPENSE    
+3. UPDATE EXPENSE  
+4. DELETE EXPENSE  
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 2
+
+[{
+ id : 1
+ amount : 20.0
+ Date : 2026-04-07
+ category : {
+ type : food
+ quantity : 2
+ descrption : 1 ngumu and 1 cake
+        }
+}]
+
+1. ADD EXPENSE
+2. VIEW EXPENSE
+3. UPDATE EXPENSE
+4. DELETE EXPENSE
+5. EXIT APPLICATION
+
+What would you Like to do(1-5) : 5
+Goodbye.....
 
 PS C:\Users\markd\Desktop\Budget_Tracker>  & 'C:\Program Files\Zulu\zulu-21\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\markd\AppData\Roaming\Code\User\workspaceStorage\ab3d57946fe22f3cb907c0d3af0e59eb\redhat.java\jdt_ws\Budget_Tracker_db155408\bin' 'Main'
 _ws\x5cBudget_Tracker_db155408\x5cbin' 'Main' ;3f835eb5-50e7-4948-8d25-c5af11579ac9

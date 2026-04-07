@@ -1,4 +1,10 @@
 class diragram
+Budget
+
+amount 
+time/days
+
+
 
 Expense
 

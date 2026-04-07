@@ -225,6 +225,18 @@ while(true){
         
 
     }
+    //try and distribute risk;
+    public static ExpenseController createExpenseController(){
+        return new ExpenseController(createService());
+    }
+    //methods to set up objects
+    public static ExpenseService createService(){
+        return new ExpenseService(createRepository());
+    }
+
+    public static ExpenseRepository createRepository(){
+        return new ExpenseRepository();
+    }
 }
 
 class ExpenseService{
@@ -497,8 +509,11 @@ class FileRepository implements Repository{
 
 class Main{
     public static void main(String [] args){
-   ExpenseController controller = new ExpenseController(new ExpenseService(new ExpenseRepository()));
+    //distribute object creation to minimize risk
+   //ExpenseController controller = new ExpenseController(new ExpenseService(new ExpenseRepository()));
+   ExpenseController controller=ExpenseController.createExpenseController();
    controller.run();
+   //controller.run();
 
     }
 }
