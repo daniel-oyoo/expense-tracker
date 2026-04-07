@@ -247,7 +247,7 @@ public class GuiView extends JFrame implements ActionListener {
                 }
                 sb.append("----------------------------------------------------------------------------------------------------------\n");
                 double total = expenses.stream().mapToDouble(Expense::getAmount).sum();
-                sb.append(String.format("TOTAL: $%.2f\n", total));
+                sb.append(String.format("TOTAL: ksh%.2f\n", total));
                 displayArea.setText(sb.toString());
             }
         } catch(Exception ex) {
