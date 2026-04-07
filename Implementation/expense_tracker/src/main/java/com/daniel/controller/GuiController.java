@@ -19,4 +19,14 @@ public class GuiController {
     public void exit(){
         System.exit(0);
     }
+
+    //create objects
+    public static GuiController createController(){
+        return new GuiController(creatService());
+    }
+
+    public static ExpenseService creatService(){
+        //return ExpenseController.createService();
+        return new ExpenseService();
+    }
 }
