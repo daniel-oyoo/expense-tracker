@@ -1,0 +1,17 @@
+*.txt
+Data
+*.class
+*.idea
+*.csv
+*.ser
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.log
+.env
+.env.local
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.txt

@@ -45,7 +45,7 @@ public class Main {
             System.out.println("YOUR API KEY - SAVE THIS: " + globalApiKey);
             System.out.println("You will need this key every time you run the app.");
         }
-        
+        // 6VTWb1U9_Eu4Kp8wuVgOIzctfdwgPmm4E8La_M9PiLhEeZ4W9hjOzeDmFNsZFbz8rQHJAOdqj4MLVc14i2KK7Q
         System.out.println("\nSelect mode:");
         System.out.println("1. Console Application");
         System.out.println("2. GUI Application");
